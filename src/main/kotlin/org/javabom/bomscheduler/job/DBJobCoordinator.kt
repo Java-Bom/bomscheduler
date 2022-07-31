@@ -1,4 +1,4 @@
-package org.javabom.bomscheduler
+package org.javabom.bomscheduler.job
 
 class DBJobCoordinator {
 

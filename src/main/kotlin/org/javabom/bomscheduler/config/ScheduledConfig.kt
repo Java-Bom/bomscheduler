@@ -1,4 +1,6 @@
-package org.javabom.bomscheduler
+package org.javabom.bomscheduler.config
+
+import org.javabom.bomscheduler.schedule.BomSchedule
 
 class ScheduledConfig {
 
