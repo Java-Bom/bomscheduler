@@ -1,5 +1,6 @@
 package org.javabom.bomscheduler
 
+import org.javabom.bomscheduler.coordinator.spec.SingleJob
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
@@ -8,7 +9,7 @@ class TestJob {
 
 
     @Scheduled(fixedDelay = 1000)
-    @Scheduled
+    @SingleJob
     fun job(){
         print("test")
     }

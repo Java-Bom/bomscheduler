@@ -8,7 +8,11 @@ class SingleJobScheduleInterceptor(
     private val jobManager: JobManager
 ) : MethodInterceptor {
 
-    override fun invoke(invocation: MethodInvocation): Any {
-        return invocation
+    override fun invoke(invocation: MethodInvocation): Any? {
+        if(jobManager.lock){
+            return null
+        }
+        invocation.proceed()
+        return null
     }
 }

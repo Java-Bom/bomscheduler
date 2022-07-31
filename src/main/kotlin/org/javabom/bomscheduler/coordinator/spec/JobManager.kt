@@ -1,3 +1,10 @@
 package org.javabom.bomscheduler.coordinator.spec
 
-data class JobManager(var lock: Boolean = true)
+import org.javabom.bomscheduler.coordinator.jdbc.JobAlloc
+
+data class JobManager(var lock: Boolean = true) {
+
+    fun updateJobStatus(alloc: JobAlloc) {
+        TODO("Not yet implemented")
+    }
+}
