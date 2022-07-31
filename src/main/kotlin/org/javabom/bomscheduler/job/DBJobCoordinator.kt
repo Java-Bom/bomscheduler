@@ -1,31 +1,29 @@
 package org.javabom.bomscheduler.job
 
-class DBJobCoordinator {
+import org.javabom.bomscheduler.config.ScheduledConfig
+import org.springframework.stereotype.Component
 
-    private val jobList = mutableListOf<Job>()
+@Component
+class DBJobCoordinator(val jobManager: JobManager) : JobCoordinator{
 
-    fun alloc(job: Job) {
-        jobList.add(job)
+    private val jobMemoryDB = mutableMapOf<String ,Job>() // memory DB
+
+    override fun alloc(job: Job) {
+        // 할당해도 되는지를 검사해줄 필요가 있다
+        // 1. 다른녀석이 할당했지만 할당하고 오랜시간이 지났다면 베타적으로 권한 습득 : TTL
+
+        synchronized(jobManager) {
+            if (jobMemoryDB[job.name] == null){
+                jobMemoryDB[job.name] = job
+                jobManager.setExecutableJob(job)
+            }else{
+                if (jobMemoryDB[job.name]?.instanceNumber == ScheduledConfig.hostName) {
+                    jobManager.setExecutableJob(job)
+                }else{
+                    jobManager.removeExectableJob(job)
+                }
+            }
+        }
     }
-
-    fun dealloc(job: Job){
-        jobList.remove(job)
-    }
-
-    fun getJob(name: String): Job? {
-        return jobList
-            .find{it.name == name}
-    }
-
 
 }
-
-// 1
-
-/// job list (table)
-/// jobName : instanceNum
-/// A       : 1
-/// B       : 1
-/// C       : 1
-
-/// job execute...
