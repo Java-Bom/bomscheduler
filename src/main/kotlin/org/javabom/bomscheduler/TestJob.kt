@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 class TestJob {
 
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedRate = 1000)
     @SingleJob
     fun job(){
         print("test")
+        Thread.sleep(10000L)
     }
 }

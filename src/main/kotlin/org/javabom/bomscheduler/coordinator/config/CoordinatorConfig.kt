@@ -1,11 +1,10 @@
 package org.javabom.bomscheduler.coordinator.config
 
-import org.javabom.bomscheduler.coordinator.jdbc.JdbcJobCoordinator
-import org.javabom.bomscheduler.coordinator.jdbc.JobAllocJdbcRepositoryImpl
 import org.javabom.bomscheduler.coordinator.jdbc.JobAllocRepository
+import org.javabom.bomscheduler.coordinator.jdbc.SingleJdbcJobCoordinator
+import org.javabom.bomscheduler.coordinator.spec.JobAllocProcessor
 import org.javabom.bomscheduler.coordinator.spec.JobCoordinator
 import org.javabom.bomscheduler.coordinator.spec.JobManager
-import org.javabom.bomscheduler.coordinator.spec.JobProcessor
 import org.javabom.bomscheduler.coordinator.spec.SingleJob
 import org.springframework.aop.Advisor
 import org.springframework.aop.Pointcut
@@ -27,12 +26,12 @@ class CoordinatorConfig(
 
     @Bean
     fun jobCoordinator(): JobCoordinator {
-        return JdbcJobCoordinator(jobAllocRepository, jobManager())
+        return SingleJdbcJobCoordinator(jobAllocRepository, jobManager())
     }
 
     @Bean
-    fun jobProcessor():JobProcessor{
-        return JobProcessor(jobCoordinator())
+    fun jobProcessor(): JobAllocProcessor {
+        return JobAllocProcessor(jobCoordinator())
     }
 
     @Bean
