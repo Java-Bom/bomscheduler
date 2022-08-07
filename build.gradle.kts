@@ -28,6 +28,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.4")
     runtimeOnly("com.h2database:h2")
+    implementation("org.mariadb.jdbc:mariadb-java-client")
 
 }
 

@@ -1,10 +1,7 @@
-package org.javabom.bomscheduler.processor
+package org.javabom.bomscheduler.coordinator
 
 import org.javabom.bomscheduler.common.logger
-import org.javabom.bomscheduler.coordinator.JobAlloc
-import org.javabom.bomscheduler.coordinator.JobAllocRepository
-import org.javabom.bomscheduler.coordinator.JobCoordinator
-import org.javabom.bomscheduler.coordinator.JobManager
+import org.javabom.bomscheduler.processor.JobAllocRequest
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
@@ -37,14 +34,16 @@ open class SingleJpaJobCoordinator(
             }
             alloc.allocId == request.allocId -> {
                 alloc.endDateTime = endDateTime //30초 연장
+                jobManager.lock = false
             }
             alloc.endDateTime.isBefore(startDateTime) -> { //인스턴스 교체
                 alloc.updateJobAlloc(request.allocId, startDateTime, endDateTime)
-                jobManager.lock = true
+                jobManager.lock = false
                 jobAllocRepository.save(alloc)
             }
             else -> {
                 log.info { "job alloc wait - $request" }
+                jobManager.lock = true
             }
         }
     }
