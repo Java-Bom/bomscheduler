@@ -1,4 +1,4 @@
-package org.javabom.bomscheduler.coordinator.jdbc
+package org.javabom.bomscheduler.coordinator
 
 interface JobAllocRepository {
     fun findByName(name: String): JobAlloc?

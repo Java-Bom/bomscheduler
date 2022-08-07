@@ -1,6 +1,6 @@
 package org.javabom.bomscheduler
 
-import org.javabom.bomscheduler.coordinator.spec.SingleJob
+import org.javabom.bomscheduler.processor.SingleJob
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 

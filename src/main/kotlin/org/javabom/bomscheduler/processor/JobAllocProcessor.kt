@@ -1,26 +1,32 @@
-package org.javabom.bomscheduler.coordinator.spec
+package org.javabom.bomscheduler.processor
 
+import org.javabom.bomscheduler.broker.JobAllocTaskBroker
+import org.javabom.bomscheduler.common.logger
+import org.javabom.bomscheduler.coordinator.JobCoordinator
 import org.springframework.context.SmartLifecycle
 import java.util.*
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.DelayQueue
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 
-class JobAllocProcessor(private val jobCoordinator: JobCoordinator) : SmartLifecycle {
+class JobAllocProcessor(
+    private val allocId: String = UUID.randomUUID().toString(),
+    private val jobCoordinator: JobCoordinator,
+    private val jobAllocTaskBroker: JobAllocTaskBroker
+) : SmartLifecycle {
 
+    private val log = logger()
     private val lock: Lock = ReentrantLock()
     private val countDownLatch: CountDownLatch = CountDownLatch(1)
-    private val allocId: String = UUID.randomUUID().toString()
-    private val jobAllocTaskQueue: DelayQueue<JobAllocTask> = DelayQueue()
     private var running: Boolean = false
     private var pleaseStop: Boolean = true
 
     override fun start() {
+        log.info { "start job alloc processor" }
         lock.withLock {
-            check(!running) { "Already running" }
+            check(!running) { "already running" }
             running = true
             pleaseStop = false
         }
@@ -29,7 +35,8 @@ class JobAllocProcessor(private val jobCoordinator: JobCoordinator) : SmartLifec
             try {
                 this.process()
             } catch (e: InterruptedException) {
-
+                log.error("thread interrupted error.", e)
+                Thread.currentThread().interrupt()
             } finally {
                 running = false
                 countDownLatch.countDown()
@@ -38,14 +45,14 @@ class JobAllocProcessor(private val jobCoordinator: JobCoordinator) : SmartLifec
     }
 
     private fun process() {
-        jobAllocTaskQueue.put(jobCoordinator.createDelayJobAlloc())
         while (!pleaseStop) {
             try {
-                val jobAllocTask: JobAllocTask = jobAllocTaskQueue.take()
-                jobCoordinator.alloc(jobAllocTask.toRequest(allocId))
-                jobAllocTaskQueue.put(jobCoordinator.createDelayJobAlloc())
+                val jobAllocTask: JobAllocTask = jobAllocTaskBroker.getJobAllocTask()
+                val request = jobAllocTask.toRequest(allocId)
+                jobCoordinator.alloc(request)
+                log.info { "alloc job-$request" }
             } catch (e: RuntimeException) {
-
+                log.error("job alloc execute error.", e)
             }
         }
     }
@@ -57,6 +64,7 @@ class JobAllocProcessor(private val jobCoordinator: JobCoordinator) : SmartLifec
                 countDownLatch.await()
             }
         }
+        log.info { "stop job alloc processor" }
     }
 
     override fun isRunning(): Boolean {

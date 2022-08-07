@@ -1,24 +1,22 @@
-package org.javabom.bomscheduler.coordinator.jdbc
+package org.javabom.bomscheduler.processor
 
-import org.javabom.bomscheduler.coordinator.spec.JobAllocRequest
-import org.javabom.bomscheduler.coordinator.spec.JobAllocTask
-import org.javabom.bomscheduler.coordinator.spec.JobCoordinator
-import org.javabom.bomscheduler.coordinator.spec.JobManager
+import org.javabom.bomscheduler.common.logger
+import org.javabom.bomscheduler.coordinator.JobAlloc
+import org.javabom.bomscheduler.coordinator.JobAllocRepository
+import org.javabom.bomscheduler.coordinator.JobCoordinator
+import org.javabom.bomscheduler.coordinator.JobManager
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
-class SingleJdbcJobCoordinator(
+open class SingleJpaJobCoordinator(
     private val jobAllocRepository: JobAllocRepository,
     private val jobManager: JobManager
 ) : JobCoordinator {
 
-    override fun createDelayJobAlloc(): JobAllocTask {
-        return JobAllocTask(
-            jobName = "DEFAULT_SCHEDULER",
-            delayInMilliseconds = 10000L
-        )
-    }
+    private val log = logger()
 
     //10초마다 갱신 start =now/ end = +30
+    @Transactional
     override fun alloc(request: JobAllocRequest) {
         // update for
         val startDateTime: LocalDateTime = LocalDateTime.now()
@@ -26,19 +24,27 @@ class SingleJdbcJobCoordinator(
         val alloc: JobAlloc? = jobAllocRepository.findByName(request.jobName)//name == SingleJob
         when {
             alloc == null -> {
-                jobAllocRepository.save(JobAlloc(request.allocId, startDateTime, endDateTime))
+                jobAllocRepository.save(
+                    JobAlloc(
+                        jobName = request.jobName,
+                        allocId = request.allocId,
+                        startDateTime = startDateTime,
+                        endDateTime = endDateTime
+                    )
+                )
                 //lock 해제
                 jobManager.lock = false
             }
             alloc.allocId == request.allocId -> {
-                alloc.extendEndDateTime(endDateTime) //30초 연장
+                alloc.endDateTime = endDateTime //30초 연장
             }
             alloc.endDateTime.isBefore(startDateTime) -> { //인스턴스 교체
                 alloc.updateJobAlloc(request.allocId, startDateTime, endDateTime)
                 jobManager.lock = true
+                jobAllocRepository.save(alloc)
             }
             else -> {
-                throw IllegalStateException()
+                log.info { "job alloc wait - $request" }
             }
         }
     }

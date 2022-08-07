@@ -1,4 +1,4 @@
-package org.javabom.bomscheduler.coordinator.spec
+package org.javabom.bomscheduler.processor
 
 data class JobAllocRequest(
     val allocId: String,

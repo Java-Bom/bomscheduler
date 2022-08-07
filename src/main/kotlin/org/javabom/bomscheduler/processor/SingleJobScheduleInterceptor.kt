@@ -1,8 +1,8 @@
-package org.javabom.bomscheduler.coordinator.config
+package org.javabom.bomscheduler.processor
 
 import org.aopalliance.intercept.MethodInterceptor
 import org.aopalliance.intercept.MethodInvocation
-import org.javabom.bomscheduler.coordinator.spec.JobManager
+import org.javabom.bomscheduler.coordinator.JobManager
 
 class SingleJobScheduleInterceptor(
     private val jobManager: JobManager
@@ -12,7 +12,6 @@ class SingleJobScheduleInterceptor(
         if(jobManager.lock){
             return null
         }
-        invocation.proceed()
-        return null
+        return invocation.proceed()
     }
 }

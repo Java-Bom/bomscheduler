@@ -1,4 +1,4 @@
-package org.javabom.bomscheduler.coordinator.spec
+package org.javabom.bomscheduler.processor
 
 import java.util.concurrent.Delayed
 import java.util.concurrent.TimeUnit

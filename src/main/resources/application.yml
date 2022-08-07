@@ -1,0 +1,36 @@
+spring:
+  jpa:
+    database-platform: H2
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      hibernate.hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
+      hibernate.default_batch_fetch_size: ${chunkSize:1000}
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.jdbc.batch_size: ${chunkSize:1000}
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.query.in_clause_parameter_padding: true
+    open-in-view: false
+  flyway:
+    enabled: false
+  h2:
+    console.enabled: true
+    console.path: /h2-console
+  datasource:
+    url: jdbc:h2:mem://localhost/~/bomscheduler;MODE=MYSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    hikari:
+      connectionTimeout: 3000
+      max-lifetime: 58000  # 58s
+      maximumPoolSize: 10
+      data-source-properties:
+        connectTimeout: 3000
+        socketTimeout: 60000
+      auto-commit: false
+
+bomscheduler.processor.mode: "on"
