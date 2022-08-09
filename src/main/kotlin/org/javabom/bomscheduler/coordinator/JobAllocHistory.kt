@@ -13,6 +13,6 @@ class JobAllocHistory(jobAlloc: JobAlloc) {
     val id: Long? = null
     val jobName: String = jobAlloc.jobName
     val allocId: String = jobAlloc.allocId
-    val startTime: LocalDateTime = jobAlloc.startDateTime
-    val endTime: LocalDateTime = jobAlloc.endDateTime
+    val startDateTime: LocalDateTime = jobAlloc.startDateTime
+    val endDateTime: LocalDateTime = jobAlloc.endDateTime
 }

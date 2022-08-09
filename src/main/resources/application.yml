@@ -1,3 +1,4 @@
+
 spring:
   jpa:
     database-platform: H2
@@ -24,6 +25,10 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://localhost:3306/bomscheduler?useSSL=false
+#    username: root
+#    password: root
     hikari:
       connectionTimeout: 3000
       max-lifetime: 58000  # 58s
