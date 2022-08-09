@@ -5,10 +5,12 @@ import org.javabom.bomscheduler.broker.JobAllocTaskSupplier
 import org.javabom.bomscheduler.coordinator.JobCoordinator
 import org.javabom.bomscheduler.processor.JobAllocProcessor
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.boot.task.TaskSchedulerCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 
 @Configuration
 @Import(CoordinatorConfig::class)
@@ -30,5 +32,13 @@ class JobAllocProcessorConfig {
             jobCoordinator = jobCoordinator,
             jobAllocTaskBroker = jobAllocTaskBroker
         )
+    }
+
+    @Bean
+    fun taskSchedulerCustomizer(lists: List<JobAllocTaskSupplier>): TaskSchedulerCustomizer {
+        return TaskSchedulerCustomizer { taskScheduler: ThreadPoolTaskScheduler ->
+            taskScheduler.setAwaitTerminationSeconds(60)
+            taskScheduler.setWaitForTasksToCompleteOnShutdown(true)
+        }
     }
 }
