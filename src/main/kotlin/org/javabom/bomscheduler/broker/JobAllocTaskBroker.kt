@@ -17,7 +17,7 @@ class JobAllocTaskBroker(private val allocTaskSuppliers: List<JobAllocTaskSuppli
 
     private fun generateTasks() {
         val jobAllocTasks = allocTaskSuppliers
-            .map { it.createJobAllocTask() }
+            .flatMap { it.createJobAllocTasks() }
             .filterNot { waitingJobs.contains(it) }
 
         waitingJobs.addAll(jobAllocTasks)
