@@ -36,8 +36,13 @@ class JobAllocProcessorConfig {
 
     @Bean
     fun taskSchedulerCustomizer(lists: List<JobAllocTaskSupplier>): TaskSchedulerCustomizer {
+        val delayMilliseconds: Int = lists
+            .flatMap { it.createJobAllocTasks() }
+            .map { it.delayInMilliseconds }
+            .maxOf { it }
+
         return TaskSchedulerCustomizer { taskScheduler: ThreadPoolTaskScheduler ->
-            taskScheduler.setAwaitTerminationSeconds(60)
+            taskScheduler.setAwaitTerminationSeconds(delayMilliseconds)
             taskScheduler.setWaitForTasksToCompleteOnShutdown(true)
         }
     }

@@ -6,10 +6,12 @@ import org.springframework.stereotype.Component
 @Component
 class SingleJobAllocTaskSupplier : JobAllocTaskSupplier {
 
-    override fun createJobAllocTask(): JobAllocTask {
-        return JobAllocTask(
-            jobName = "DEFAULT_SCHEDULER",
-            delayInMilliseconds = 10000L
+    override fun createJobAllocTasks(): List<JobAllocTask> {
+        return listOf(
+            JobAllocTask(
+                jobName = "DEFAULT_SCHEDULER",
+                delayInMilliseconds = 10000
+            )
         )
     }
 }

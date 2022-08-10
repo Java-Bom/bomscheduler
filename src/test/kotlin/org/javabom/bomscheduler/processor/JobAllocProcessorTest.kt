@@ -64,27 +64,19 @@ internal class JobAllocProcessorTest {
     }
 
     private fun jobAllocTaskBroker(latch: CountDownLatch): JobAllocTaskBroker {
-        return JobAllocTaskBroker(
-            allocTaskSuppliers = listOf(TestJobSupplier(latch = latch))
-        )
+        return JobAllocTaskBroker(listOf(JobAllocTaskSupplier {
+            latch.countDown()
+            listOf(JobAllocTask(jobName = "test", delayInMilliseconds = 1000))
+        }))
     }
 }
 
 class TestJobCoordinator : JobCoordinator {
     var count: Int = 0
-
     override fun alloc(request: JobAllocRequest) {
         this.count++
     }
 }
-
-class TestJobSupplier(private val latch: CountDownLatch) : JobAllocTaskSupplier {
-    override fun createJobAllocTask(): JobAllocTask {
-        latch.countDown()
-        return JobAllocTask(jobName = "test", delayInMilliseconds = 1000L)
-    }
-}
-
 
 
 
