@@ -37,7 +37,7 @@ internal class SingleJpaJobCoordinatorTest(
     }
 
     @Test
-    internal fun `같은 할당자가 작업 할당을 종료시간이 변경된다`() {
+    internal fun `같은 할당자가 작업 할당할 시 종료시간이 변경된다`() {
         //given
         val request1 = JobAllocRequest(
             allocId = "test",
