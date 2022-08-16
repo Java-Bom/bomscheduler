@@ -1,3 +1,4 @@
+
 spring:
   jpa:
     database-platform: H2

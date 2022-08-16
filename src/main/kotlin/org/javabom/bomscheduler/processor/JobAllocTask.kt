@@ -5,22 +5,22 @@ import java.util.concurrent.TimeUnit
 
 data class JobAllocTask(
     val jobName: String,
-    val delayInMilliseconds: Long
+    val delayInMilliseconds: Int
 ) : Delayed {
 
-    private var startTime: Long = 0
+    private var startMilliseconds: Long = 0
 
     init {
-        this.startTime = System.currentTimeMillis() + delayInMilliseconds
+        this.startMilliseconds = System.currentTimeMillis() + delayInMilliseconds
     }
 
     override fun getDelay(unit: TimeUnit): Long {
-        val diff = startTime - System.currentTimeMillis()
+        val diff = startMilliseconds - System.currentTimeMillis()
         return unit.convert(diff, TimeUnit.MILLISECONDS)
     }
 
     override fun compareTo(other: Delayed): Int {
-        return (startTime - (other as JobAllocTask).startTime).toInt()
+        return (startMilliseconds - (other as JobAllocTask).startMilliseconds).toInt()
     }
 
     fun toRequest(allocId: String): JobAllocRequest {
