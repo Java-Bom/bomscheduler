@@ -3,6 +3,7 @@ package org.javabom.bomscheduler.processor
 import org.javabom.bomscheduler.broker.JobAllocTaskBroker
 import org.javabom.bomscheduler.common.logger
 import org.javabom.bomscheduler.coordinator.JobCoordinator
+import org.javabom.bomscheduler.coordinator.JobManager
 import org.springframework.context.SmartLifecycle
 import java.util.*
 import java.util.concurrent.CountDownLatch
@@ -14,7 +15,8 @@ import kotlin.concurrent.withLock
 class JobAllocProcessor(
     private val allocId: String = UUID.randomUUID().toString(),
     private val jobCoordinator: JobCoordinator,
-    private val jobAllocTaskBroker: JobAllocTaskBroker
+    private val jobAllocTaskBroker: JobAllocTaskBroker,
+    private val jobManager: JobManager
 ) : SmartLifecycle {
 
     private val log = logger()
@@ -49,8 +51,11 @@ class JobAllocProcessor(
             try {
                 val jobAllocTask: JobAllocTask = jobAllocTaskBroker.getJobAllocTask()
                 val request = jobAllocTask.toRequest(allocId)
-                jobCoordinator.alloc(request)
-                log.info { "alloc job-$request" }
+                jobManager.alloc = jobCoordinator.alloc(request)
+
+                if (jobManager.alloc) {
+                    log.info { "alloc job-${request.allocId}" }
+                }
             } catch (e: RuntimeException) {
                 log.error("job alloc execute error.", e)
             }

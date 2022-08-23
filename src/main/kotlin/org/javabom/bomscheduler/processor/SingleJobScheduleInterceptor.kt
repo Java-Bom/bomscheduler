@@ -9,9 +9,9 @@ class SingleJobScheduleInterceptor(
 ) : MethodInterceptor {
 
     override fun invoke(invocation: MethodInvocation): Any? {
-        if(jobManager.lock){
-            return null
+        if (jobManager.alloc) {
+            return invocation.proceed()
         }
-        return invocation.proceed()
+        return null
     }
 }

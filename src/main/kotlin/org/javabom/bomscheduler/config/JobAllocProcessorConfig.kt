@@ -3,6 +3,7 @@ package org.javabom.bomscheduler.config
 import org.javabom.bomscheduler.broker.JobAllocTaskBroker
 import org.javabom.bomscheduler.broker.JobAllocTaskSupplier
 import org.javabom.bomscheduler.coordinator.JobCoordinator
+import org.javabom.bomscheduler.coordinator.JobManager
 import org.javabom.bomscheduler.processor.JobAllocProcessor
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.task.TaskSchedulerCustomizer
@@ -26,11 +27,13 @@ class JobAllocProcessorConfig {
     @Bean
     fun jobProcessor(
         jobCoordinator: JobCoordinator,
-        jobAllocTaskBroker: JobAllocTaskBroker
+        jobAllocTaskBroker: JobAllocTaskBroker,
+        jobManager: JobManager
     ): JobAllocProcessor {
         return JobAllocProcessor(
             jobCoordinator = jobCoordinator,
-            jobAllocTaskBroker = jobAllocTaskBroker
+            jobAllocTaskBroker = jobAllocTaskBroker,
+            jobManager = jobManager
         )
     }
 
