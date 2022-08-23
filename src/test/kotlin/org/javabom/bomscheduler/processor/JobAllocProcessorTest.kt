@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.javabom.bomscheduler.broker.JobAllocTaskBroker
 import org.javabom.bomscheduler.broker.JobAllocTaskSupplier
 import org.javabom.bomscheduler.coordinator.JobCoordinator
+import org.javabom.bomscheduler.coordinator.JobManager
 import org.junit.jupiter.api.Test
 import org.springframework.util.StopWatch
 import java.util.concurrent.CountDownLatch
@@ -21,7 +22,8 @@ internal class JobAllocProcessorTest {
         val stopWatch = StopWatch()
         val processor = JobAllocProcessor(
             jobCoordinator = coordinator,
-            jobAllocTaskBroker = jobAllocTaskBroker(jobSupplierLatch)
+            jobAllocTaskBroker = jobAllocTaskBroker(jobSupplierLatch),
+            jobManager = JobManager()
         )
 
         //when - 3개의 작업 1초 지연 설정
@@ -45,7 +47,8 @@ internal class JobAllocProcessorTest {
         val jobSupplierLatch = CountDownLatch(1)
         val processor = JobAllocProcessor(
             jobCoordinator = coordinator,
-            jobAllocTaskBroker = jobAllocTaskBroker(jobSupplierLatch)
+            jobAllocTaskBroker = jobAllocTaskBroker(jobSupplierLatch),
+            jobManager = JobManager()
         )
 
         //when - 1초 지연 설정
@@ -68,9 +71,10 @@ internal class JobAllocProcessorTest {
 
 class TestJobCoordinator(private val latch: CountDownLatch) : JobCoordinator {
     var count: Int = 0
-    override fun alloc(request: JobAllocRequest) {
+    override fun alloc(request: JobAllocRequest): Boolean {
         this.count++
         latch.countDown()
+        return true
     }
 }
 

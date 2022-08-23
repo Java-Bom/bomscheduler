@@ -9,8 +9,8 @@ class SingleJobAllocTaskSupplier : JobAllocTaskSupplier {
     override fun createJobAllocTasks(): List<JobAllocTask> {
         return listOf(
             JobAllocTask(
-                jobName = "DEFAULT_SCHEDULER",
-                delayInMilliseconds = 10000
+                jobName = BomScheduleJob.DEFAULT_JOB.jobName,
+                delayInMilliseconds = 10_000
             )
         )
     }
