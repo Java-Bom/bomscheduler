@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @EnableScheduling
-@ConfigurationPropertiesScan
 class BomschedulerApplication
 
 fun main(args: Array<String>) {

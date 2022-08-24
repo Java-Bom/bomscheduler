@@ -4,24 +4,28 @@ import org.javabom.bomscheduler.job.Job
 import org.javabom.bomscheduler.job.JobCollection
 import org.javabom.bomscheduler.job.JobCoordinator
 import org.javabom.bomscheduler.schedule.BomSchedule
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.util.*
 
 @Configuration
-class ScheduleConfig(val bomConfig: BomConfig, val jobCoordinator: JobCoordinator) {
+@EnableConfigurationProperties(BomProperty::class)
+class ScheduleConfig(val bomProperty: BomProperty, val jobCoordinator: JobCoordinator) {
 
     companion object {
-        val HOST_NAME: String = UUID.randomUUID().toString()// systemConfig
+        val HOST_NAME: String = UUID.randomUUID().toString() // systemConfig
     }
 
     @Bean
     fun jobCollection(): JobCollection {
         val annotations: List<BomSchedule> = DefinedSchedule::class.java
-            .getAnnotationsByType(BomSchedule::class.java).toList()
+            .methods
+            .mapNotNull { method -> method.getAnnotation(BomSchedule::class.java) }
 
         val preDefinedJobs = jobCoordinator.getDefinedJob()
-        val nowDefinedJobs = annotations.map { Job(name = it.jobName, instanceName = HOST_NAME, ttl = bomConfig.ttl) }
+        val nowDefinedJobs = annotations
+            .map { Job(name = it.jobName, instanceName = HOST_NAME, ttl = bomProperty.ttl) }
         val executeJobs = registerJobs(preDefinedJobs, nowDefinedJobs)
 
         return JobCollection(executeJobs)
@@ -36,7 +40,7 @@ class ScheduleConfig(val bomConfig: BomConfig, val jobCoordinator: JobCoordinato
 
     private fun List<Job>.updateJobs(nowDefinedJobs: List<Job>): List<Job> {
         val updateJobs = this.filter { prev -> nowDefinedJobs.map { it.name }.contains(prev.name) }
-            .map { Job(name = it.name, instanceName = HOST_NAME, ttl = bomConfig.ttl, version = (it.version + 1)) }
+            .map { Job(name = it.name, instanceName = HOST_NAME, ttl = bomProperty.ttl, version = (it.version + 1)) }
         jobCoordinator.updateJobs(updateJobs)
         return updateJobs
     }

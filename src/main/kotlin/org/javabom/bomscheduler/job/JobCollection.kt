@@ -1,5 +1,8 @@
 package org.javabom.bomscheduler.job
 
-class JobCollection(val definedJobs : List<Job> = emptyList()) {
+class JobCollection(definedJobs : List<Job> = emptyList()) {
 
+    init {
+        definedJobs.forEach{ println("Register Job ${it.name}")}
+    }
 }

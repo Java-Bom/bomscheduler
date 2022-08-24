@@ -1,9 +1,4 @@
 package org.javabom.bomscheduler.job
-
-import org.springframework.stereotype.Service
-
-
-@Service
 interface JobCoordinator {
 
     fun getDefinedJob(): List<Job>

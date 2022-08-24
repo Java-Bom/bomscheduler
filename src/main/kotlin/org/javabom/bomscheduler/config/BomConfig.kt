@@ -5,10 +5,11 @@ import org.javabom.bomscheduler.job.JobCoordinator
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
-@ConstructorBinding
-@ConfigurationProperties(prefix = "bom")
-data class BomConfig(val ttl: Long){
+
+@Configuration
+class BomConfig{
     @Bean
     fun jobCoordinator(): JobCoordinator = MemoryJobCoordinator()
 }
