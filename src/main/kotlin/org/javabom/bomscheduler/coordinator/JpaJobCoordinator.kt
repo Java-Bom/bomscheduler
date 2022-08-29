@@ -4,16 +4,15 @@ import org.javabom.bomscheduler.common.logger
 import org.javabom.bomscheduler.processor.JobAllocRequest
 import org.springframework.transaction.annotation.Transactional
 
-open class SingleJpaJobCoordinator(
+open class JpaJobCoordinator(
     private val jobAllocRepository: JobAllocRepository,
-    private val jobManager: JobManager
 ) : JobCoordinator {
 
     private val log = logger()
 
     //10초마다 갱신 start =now/ end = +30
     @Transactional
-    override fun alloc(request: JobAllocRequest) {
+    override fun alloc(request: JobAllocRequest): Boolean {
         // update for
         val alloc: JobAlloc? = jobAllocRepository.findByName(request.jobName)//name == SingleJob
         when {
@@ -27,23 +26,23 @@ open class SingleJpaJobCoordinator(
                     )
                 )
                 //lock 해제
-                jobManager.lock = false
+                return true
             }
 
-            alloc.allocId == request.allocId -> {
+            alloc.enableExtend(request.allocId) -> {
                 alloc.endDateTime = request.endDateTime //30초 연장
-                jobManager.lock = false
+                return true
             }
 
-            alloc.endDateTime.isBefore(request.startDateTime) -> { //인스턴스 교체
+            alloc.enableAlloc(request.startDateTime) -> { //인스턴스 교체
                 alloc.updateJobAlloc(request.allocId, request.startDateTime, request.endDateTime)
-                jobManager.lock = false
                 jobAllocRepository.save(alloc)
+                return true
             }
 
             else -> {
-                log.info { "job alloc wait - $request" }
-                jobManager.lock = true
+                log.info { "job alloc wait - ${request.allocId}" }
+                return false
             }
         }
     }

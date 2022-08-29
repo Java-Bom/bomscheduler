@@ -1,9 +1,9 @@
-
 spring:
   jpa:
-    show-sql: false
+    database-platform: H2
+    show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
       hibernate.hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
@@ -16,11 +16,18 @@ spring:
     open-in-view: false
   flyway:
     enabled: false
+  h2:
+    console.enabled: true
+    console.path: /h2-console
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/bomscheduler?useSSL=false
-    username: root
-    password: root
+    url: jdbc:h2:mem://localhost/~/bomscheduler;MODE=MYSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    #    driver-class-name: org.mariadb.jdbc.Driver
+    #    url: jdbc:mariadb://localhost:3306/bomscheduler?useSSL=false
+    #    username: root
+    #    password: root
     hikari:
       connectionTimeout: 3000
       max-lifetime: 58000  # 58s

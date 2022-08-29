@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 
 data class JobAllocTask(
     val jobName: String,
-    val delayInMilliseconds: Int
+    val delayInMilliseconds: Int,
 ) : Delayed {
 
     private var startMilliseconds: Long = 0
@@ -24,8 +24,6 @@ data class JobAllocTask(
     }
 
     fun toRequest(allocId: String): JobAllocRequest {
-        return JobAllocRequest(
-            allocId = allocId, jobName = jobName
-        )
+        return JobAllocRequest(allocId = allocId, jobName = jobName)
     }
 }

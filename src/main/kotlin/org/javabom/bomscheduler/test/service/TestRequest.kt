@@ -1,4 +1,4 @@
-package org.javabom.bomscheduler.test
+package org.javabom.bomscheduler.test.service
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
