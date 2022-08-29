@@ -4,8 +4,8 @@ import org.javabom.bomscheduler.common.logger
 import org.javabom.bomscheduler.processor.JobAllocRequest
 import org.springframework.transaction.annotation.Transactional
 
-open class SingleJpaJobCoordinator(
-    private val jobAllocRepository: JobAllocRepository
+open class JpaJobCoordinator(
+    private val jobAllocRepository: JobAllocRepository,
 ) : JobCoordinator {
 
     private val log = logger()
@@ -29,12 +29,12 @@ open class SingleJpaJobCoordinator(
                 return true
             }
 
-            alloc.allocId == request.allocId -> {
+            alloc.enableExtend(request.allocId) -> {
                 alloc.endDateTime = request.endDateTime //30초 연장
                 return true
             }
 
-            alloc.endDateTime.isBefore(request.startDateTime) -> { //인스턴스 교체
+            alloc.enableAlloc(request.startDateTime) -> { //인스턴스 교체
                 alloc.updateJobAlloc(request.allocId, request.startDateTime, request.endDateTime)
                 jobAllocRepository.save(alloc)
                 return true

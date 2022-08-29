@@ -1,4 +1,4 @@
-package org.javabom.bomscheduler.test
+package org.javabom.bomscheduler.test.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class TestService(
-    private val testRequestRepository: TestRequestRepository
+    private val testRequestRepository: TestRequestRepository,
 ) {
 
     fun request(): Long {

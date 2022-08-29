@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 internal class SingleJpaJobCoordinatorTest(
     private val jobAllocJpaRepository: JobAllocJpaRepository,
     private val jobAllocHistoryJpaRepository: JobAllocHistoryJpaRepository,
-    private val singleJpaJobCoordinator: SingleJpaJobCoordinator
+    private val jpaJobCoordinator: JpaJobCoordinator,
 ) {
 
 
@@ -25,7 +25,7 @@ internal class SingleJpaJobCoordinatorTest(
         //given
         val request = JobAllocRequest(allocId = "test", jobName = "testJob")
         //when
-        singleJpaJobCoordinator.alloc(request)
+        jpaJobCoordinator.alloc(request)
 
         //then
         val allocList = jobAllocJpaRepository.findAll()
@@ -43,7 +43,7 @@ internal class SingleJpaJobCoordinatorTest(
             allocId = "test",
             jobName = "testJob"
         )
-        singleJpaJobCoordinator.alloc(request1)
+        jpaJobCoordinator.alloc(request1)
         val request2 = JobAllocRequest(
             allocId = request1.allocId,
             jobName = request1.jobName,
@@ -52,7 +52,7 @@ internal class SingleJpaJobCoordinatorTest(
         )
 
         //when
-        singleJpaJobCoordinator.alloc(request2)
+        jpaJobCoordinator.alloc(request2)
 
         //then
         val allocList = jobAllocJpaRepository.findAll()
@@ -68,7 +68,7 @@ internal class SingleJpaJobCoordinatorTest(
             allocId = "test",
             jobName = "testJob"
         )
-        singleJpaJobCoordinator.alloc(request1)
+        jpaJobCoordinator.alloc(request1)
         val request2 = JobAllocRequest(
             allocId = "test2",
             jobName = "testJob",
@@ -77,7 +77,7 @@ internal class SingleJpaJobCoordinatorTest(
         )
 
         //when
-        singleJpaJobCoordinator.alloc(request2)
+        jpaJobCoordinator.alloc(request2)
 
         //then
         val allocList = jobAllocJpaRepository.findAll()
@@ -94,7 +94,7 @@ internal class SingleJpaJobCoordinatorTest(
             allocId = "test",
             jobName = "testJob"
         )
-        singleJpaJobCoordinator.alloc(request1)
+        jpaJobCoordinator.alloc(request1)
         val request2 = JobAllocRequest(
             allocId = "test2",
             jobName = "testJob",
@@ -103,7 +103,7 @@ internal class SingleJpaJobCoordinatorTest(
         )
 
         //when
-        singleJpaJobCoordinator.alloc(request2)
+        jpaJobCoordinator.alloc(request2)
 
         //then
         val allocList = jobAllocJpaRepository.findAll()

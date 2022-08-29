@@ -32,7 +32,6 @@ class JobAllocProcessor(
             running = true
             pleaseStop = false
         }
-
         Thread {
             try {
                 this.process()
@@ -51,10 +50,11 @@ class JobAllocProcessor(
             try {
                 val jobAllocTask: JobAllocTask = jobAllocTaskBroker.getJobAllocTask()
                 val request = jobAllocTask.toRequest(allocId)
-                jobManager.alloc = jobCoordinator.alloc(request)
 
-                if (jobManager.alloc) {
-                    log.info { "alloc job-${request.allocId}" }
+                if (jobCoordinator.alloc(request)) {
+                    jobManager.alloc(request.jobName)
+                } else {
+                    jobManager.free(request.jobName)
                 }
             } catch (e: RuntimeException) {
                 log.error("job alloc execute error.", e)
