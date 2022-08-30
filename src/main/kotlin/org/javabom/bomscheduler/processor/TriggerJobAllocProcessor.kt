@@ -18,10 +18,11 @@ class TriggerJobAllocProcessor(
     @PostConstruct
     fun init() {
         jobs.forEach {
+            it.jobManager = jobManager
             it.jobTrigger = jobTrigger
             val period = it.getPeriod()
             period.isFixedRate = true
-            taskScheduler.schedule(it.getBomScheduleJob(jobManager), period)
+            taskScheduler.schedule(it.getBomScheduleJob(), period)
         }
     }
 }
