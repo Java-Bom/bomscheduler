@@ -1,4 +1,4 @@
-package org.javabom.bomscheduler.processor
+package org.javabom.bomscheduler.coordinator
 
 import java.time.LocalDateTime
 

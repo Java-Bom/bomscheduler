@@ -1,7 +1,6 @@
 package org.javabom.bomscheduler.coordinator
 
 import org.javabom.bomscheduler.common.logger
-import org.javabom.bomscheduler.processor.JobAllocRequest
 import org.springframework.transaction.annotation.Transactional
 
 open class JpaJobCoordinator(

@@ -1,9 +1,9 @@
 package org.javabom.bomscheduler.spec
 
+import org.javabom.bomscheduler.broker.JobAllocTask
 import org.javabom.bomscheduler.broker.TriggerJobAllocTaskCreator
 import org.javabom.bomscheduler.coordinator.JobManager
 import org.javabom.bomscheduler.coordinator.JobTrigger
-import org.javabom.bomscheduler.processor.JobAllocTask
 import org.springframework.scheduling.support.PeriodicTrigger
 import java.util.concurrent.TimeUnit
 

@@ -1,7 +1,6 @@
 package org.javabom.bomscheduler.coordinator
 
 import org.assertj.core.api.Assertions.assertThat
-import org.javabom.bomscheduler.processor.JobAllocRequest
 import org.javabom.bomscheduler.support.BomschedulerTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test

@@ -1,7 +1,6 @@
 package org.javabom.bomscheduler.broker
 
 import org.javabom.bomscheduler.common.logger
-import org.javabom.bomscheduler.processor.JobAllocTask
 import java.util.concurrent.DelayQueue
 
 class JobAllocTaskBroker(private val allocTaskSuppliers: List<JobAllocTaskSupplier>) {
