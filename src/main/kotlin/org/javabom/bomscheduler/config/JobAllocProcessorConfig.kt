@@ -15,7 +15,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 
 @Configuration
 @Import(CoordinatorConfig::class)
-@ComponentScan("org.javabom.bomscheduler.broker")
+@ComponentScan(
+    "org.javabom.bomscheduler.broker"
+)
 @ConditionalOnProperty(name = ["bomscheduler.processor.mode"], havingValue = "on")
 class JobAllocProcessorConfig {
 
@@ -42,7 +44,7 @@ class JobAllocProcessorConfig {
         val delayMilliseconds: Int = lists
             .flatMap { it.createJobAllocTasks() }
             .map { it.delayInMilliseconds }
-            .maxOf { it }
+            .maxOfOrNull { it } ?: 10_000
 
         return TaskSchedulerCustomizer { taskScheduler: ThreadPoolTaskScheduler ->
             taskScheduler.setAwaitTerminationSeconds(delayMilliseconds)

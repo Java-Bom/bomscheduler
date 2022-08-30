@@ -1,7 +1,7 @@
-package org.javabom.bomscheduler.test
+package org.javabom.bomscheduler.test.job
 
-import org.javabom.bomscheduler.broker.BomScheduleJob
 import org.javabom.bomscheduler.common.logger
+import org.javabom.bomscheduler.spec.BomScheduleJob
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 

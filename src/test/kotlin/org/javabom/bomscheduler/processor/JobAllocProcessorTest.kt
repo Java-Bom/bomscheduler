@@ -2,8 +2,10 @@ package org.javabom.bomscheduler.processor
 
 
 import org.assertj.core.api.Assertions.assertThat
+import org.javabom.bomscheduler.broker.JobAllocTask
 import org.javabom.bomscheduler.broker.JobAllocTaskBroker
 import org.javabom.bomscheduler.broker.JobAllocTaskSupplier
+import org.javabom.bomscheduler.coordinator.JobAllocRequest
 import org.javabom.bomscheduler.coordinator.JobCoordinator
 import org.javabom.bomscheduler.coordinator.JobManager
 import org.junit.jupiter.api.Test
