@@ -9,4 +9,10 @@ data class Job(
     val version: Int = 0,
     val lastExecutionTime: LocalDateTime = LocalDateTime.now(),
     val instanceExpiredTime: LocalDateTime? = null
-)
+) {
+
+    fun isExpired(): Boolean {
+        return instanceExpiredTime
+            ?.isBefore(LocalDateTime.now())?: false
+    }
+}
