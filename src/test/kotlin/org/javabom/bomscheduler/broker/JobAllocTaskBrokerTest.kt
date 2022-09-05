@@ -1,7 +1,6 @@
 package org.javabom.bomscheduler.broker
 
 import org.assertj.core.api.Assertions.assertThat
-import org.javabom.bomscheduler.processor.JobAllocTask
 import org.junit.jupiter.api.Test
 import org.springframework.util.StopWatch
 

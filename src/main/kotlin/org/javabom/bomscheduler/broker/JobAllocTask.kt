@@ -1,11 +1,12 @@
-package org.javabom.bomscheduler.processor
+package org.javabom.bomscheduler.broker
 
+import java.time.LocalDateTime
 import java.util.concurrent.Delayed
 import java.util.concurrent.TimeUnit
 
 data class JobAllocTask(
     val jobName: String,
-    val delayInMilliseconds: Int
+    val delayInMilliseconds: Int = DEFAULT_DELAY_MILLI_SEC,
 ) : Delayed {
 
     private var startMilliseconds: Long = 0
@@ -23,9 +24,17 @@ data class JobAllocTask(
         return (startMilliseconds - (other as JobAllocTask).startMilliseconds).toInt()
     }
 
-    fun toRequest(allocId: String): JobAllocRequest {
-        return JobAllocRequest(
-            allocId = allocId, jobName = jobName
-        )
+    fun getStartDateTime(): LocalDateTime {
+        return LocalDateTime.now()
+    }
+
+    fun getEndDateTime(): LocalDateTime {
+        //모니터링 반복 주기 + 20초
+        //ex ) 10초마다 돌시 30초의 만료시간
+        return LocalDateTime.now().plusSeconds((delayInMilliseconds % 1_000 + 20).toLong())
+    }
+
+    companion object {
+        private const val DEFAULT_DELAY_MILLI_SEC = 10_000
     }
 }

@@ -1,11 +1,10 @@
 package org.javabom.bomscheduler.config
 
-import org.javabom.bomscheduler.broker.BomScheduleJob
 import org.javabom.bomscheduler.coordinator.JobAllocRepository
 import org.javabom.bomscheduler.coordinator.JobCoordinator
 import org.javabom.bomscheduler.coordinator.JobManager
-import org.javabom.bomscheduler.coordinator.SingleJpaJobCoordinator
-import org.javabom.bomscheduler.processor.SingleJobScheduleInterceptor
+import org.javabom.bomscheduler.coordinator.JpaJobCoordinator
+import org.javabom.bomscheduler.spec.BomScheduleJob
 import org.springframework.aop.Advisor
 import org.springframework.aop.Pointcut
 import org.springframework.aop.support.DefaultPointcutAdvisor
@@ -38,12 +37,12 @@ class CoordinatorConfig {
 
     @Bean
     fun jobCoordinator(jobAllocRepository: JobAllocRepository): JobCoordinator {
-        return SingleJpaJobCoordinator(jobAllocRepository)
+        return JpaJobCoordinator(jobAllocRepository)
     }
 
     @Bean
     fun singleJobScheduleInterceptor(): Advisor {
-        val interceptor = SingleJobScheduleInterceptor(jobManager())
+        val interceptor = BomScheduleJobInterceptor(jobManager())
         val pointcut: Pointcut = AnnotationMatchingPointcut(null, BomScheduleJob::class.java)
         val pointcutAdvisor = DefaultPointcutAdvisor(pointcut, interceptor)
         pointcutAdvisor.order = Ordered.HIGHEST_PRECEDENCE + 1

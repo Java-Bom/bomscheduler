@@ -1,7 +1,9 @@
 package org.javabom.bomscheduler.processor
 
+import org.javabom.bomscheduler.broker.JobAllocTask
 import org.javabom.bomscheduler.broker.JobAllocTaskBroker
 import org.javabom.bomscheduler.common.logger
+import org.javabom.bomscheduler.coordinator.JobAllocRequest
 import org.javabom.bomscheduler.coordinator.JobCoordinator
 import org.javabom.bomscheduler.coordinator.JobManager
 import org.springframework.context.SmartLifecycle
@@ -16,7 +18,7 @@ class JobAllocProcessor(
     private val allocId: String = UUID.randomUUID().toString(),
     private val jobCoordinator: JobCoordinator,
     private val jobAllocTaskBroker: JobAllocTaskBroker,
-    private val jobManager: JobManager
+    private val jobManager: JobManager,
 ) : SmartLifecycle {
 
     private val log = logger()
@@ -32,7 +34,6 @@ class JobAllocProcessor(
             running = true
             pleaseStop = false
         }
-
         Thread {
             try {
                 this.process()
@@ -50,11 +51,17 @@ class JobAllocProcessor(
         while (!pleaseStop) {
             try {
                 val jobAllocTask: JobAllocTask = jobAllocTaskBroker.getJobAllocTask()
-                val request = jobAllocTask.toRequest(allocId)
-                jobManager.alloc = jobCoordinator.alloc(request)
+                val request = JobAllocRequest(
+                    allocId = allocId,
+                    jobName = jobAllocTask.jobName,
+                    startDateTime = jobAllocTask.getStartDateTime(),
+                    endDateTime = jobAllocTask.getEndDateTime()
+                )
 
-                if (jobManager.alloc) {
-                    log.info { "alloc job-${request.allocId}" }
+                if (jobCoordinator.alloc(request)) {
+                    jobManager.alloc(request.jobName)
+                } else {
+                    jobManager.free(request.jobName)
                 }
             } catch (e: RuntimeException) {
                 log.error("job alloc execute error.", e)
