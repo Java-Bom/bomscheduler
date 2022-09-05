@@ -43,8 +43,7 @@ class JobAllocProcessorConfig {
     fun taskSchedulerCustomizer(lists: List<JobAllocTaskSupplier>): TaskSchedulerCustomizer {
         val delayMilliseconds: Int = lists
             .flatMap { it.createJobAllocTasks() }
-            .map { it.delayInMilliseconds }
-            .maxOfOrNull { it } ?: 10_000
+            .maxOfOrNull { it.delayInMilliseconds } ?: 10_000
 
         return TaskSchedulerCustomizer { taskScheduler: ThreadPoolTaskScheduler ->
             taskScheduler.setAwaitTerminationSeconds(delayMilliseconds)

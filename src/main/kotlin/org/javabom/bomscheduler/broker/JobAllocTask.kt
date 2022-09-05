@@ -35,6 +35,6 @@ data class JobAllocTask(
     }
 
     companion object {
-        const val DEFAULT_DELAY_MILLI_SEC = 10_000
+        private const val DEFAULT_DELAY_MILLI_SEC = 10_000
     }
 }

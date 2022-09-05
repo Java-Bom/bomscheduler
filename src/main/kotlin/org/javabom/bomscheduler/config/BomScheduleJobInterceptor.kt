@@ -1,10 +1,11 @@
-package org.javabom.bomscheduler.spec
+package org.javabom.bomscheduler.config
 
 import org.aopalliance.intercept.MethodInterceptor
 import org.aopalliance.intercept.MethodInvocation
 import org.javabom.bomscheduler.coordinator.JobManager
+import org.javabom.bomscheduler.spec.BomScheduleJob
 
-class SingleJobScheduleInterceptor(
+class BomScheduleJobInterceptor(
     private val jobManager: JobManager,
 ) : MethodInterceptor {
 
