@@ -4,6 +4,11 @@ import org.javabom.bomscheduler.config.ScheduleConfig
 import org.springframework.context.SmartLifecycle
 import java.time.LocalDateTime
 
+/**
+ * JobCoordinator 와의 통신을 담당.
+ * JobCoordinator 로 부터 주기적으로 다른 인스턴스 (HOST) 로 부터 빼앗아 올 수 있는 Job이 있는지 확인하여
+ * JobCollection에 등록한다
+ */
 class JobManager(
     private val jobCoordinator: JobCoordinator,
     private val jobCollection: JobCollection
@@ -29,6 +34,11 @@ class JobManager(
         return running
     }
 
+    /**
+     * 주기적으로 JobCoordinator 에 빼앗아 올 수 있는 Job이 있는지 확인한다.
+     * 빼앗아올 Job 이 있다면 Job의 정보를 변경하고 JobCoordinator 에 update 요청을 한다.
+     * 그 후 JobColllection에 실행 가능한 Job 교체를 요청한다.
+     */
     private fun updateJob() {
         while (keepGoing) {
             val (currentJobs, anotherJobs) = jobCoordinator.getDefinedJob()
